@@ -22,7 +22,8 @@ def asinThetaDegrees(e1, e2) :
 
 def computeTheta(e1, e2) :
     atan2Theta = atanThetaDegrees(e1, e2)
-    return atan2Theta if atan2Theta > 0 else (atan2Theta + 180)
+    return atan2Theta
+    # return atan2Theta if atan2Theta > 0 else (atan2Theta + 180)
 
 def createEllipse(x, y, e1, e2, factor = None):
     factor = factor if factor else 1
@@ -32,13 +33,13 @@ def createEllipse(x, y, e1, e2, factor = None):
     theta = computeTheta(e1, e2)
     return Ellipse((x,y), factor * (a * np.cos(math.radians(theta))), factor * (a * np.sin(math.radians(theta))), theta)
 
-def genPlot(skydf, sizeFactor = None):
+def genPlot(skydf, haloLocation = None, sizeFactor = None):
         if skydf.size < 1 : return
 
         sizeFactor = sizeFactor if sizeFactor else 1
 
         fig, ax = plt.subplots()
-        ax.set_ylim(4200.0, 0.0)
+        ax.set_ylim(0.0, 4200.0)
         ax.set_xlim(0.0, 4200.0)
         ax.xaxis.tick_top()
         for i in skydf.index :
@@ -46,6 +47,11 @@ def genPlot(skydf, sizeFactor = None):
             y = skydf.loc[i, "y"]
             e1 = skydf.loc[i, "e1"]
             e2 = skydf.loc[i, "e2"]
-            ax.add_artist(createEllipse(x, y, e1, e2, sizeFactor))
-            
+            ell = createEllipse(x, y, e1, e2, sizeFactor)
+            ax.add_artist(ell)
+            ell.set_alpha(np.random.rand())
+            ell.set_facecolor(np.random.rand(3))
+
+        if haloLocation :
+            ax.plot(haloLocation[0], haloLocation[1], 'ro', markersize = 20)
         return fig
