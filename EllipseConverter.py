@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 
 from matplotlib.patches import Ellipse
 
+def getE(e1, e2):
+    return np.sqrt(e1*e1 + e2*e2)
 
 def atanThetaDegrees(e1, e2) :
     return math.degrees(np.arctan2(e2,e1) * .5)
@@ -33,25 +35,42 @@ def createEllipse(x, y, e1, e2, factor = None):
     theta = computeTheta(e1, e2)
     return Ellipse((x,y), factor * (a * np.cos(math.radians(theta))), factor * (a * np.sin(math.radians(theta))), theta)
 
-def genPlot(skydf, haloLocation = None, sizeFactor = None):
-        if skydf.size < 1 : return
+def genPlotEllipses(skydf, haloLocation = None, sizeFactor = None):
+    fig, ax = plt.subplots()
+    if skydf.size < 1 : return fig
 
-        sizeFactor = sizeFactor if sizeFactor else 1
+    sizeFactor = sizeFactor if sizeFactor else 1
 
-        fig, ax = plt.subplots()
-        ax.set_ylim(0.0, 4200.0)
-        ax.set_xlim(0.0, 4200.0)
-        ax.xaxis.tick_top()
-        for i in skydf.index :
-            x = skydf.loc[i, "x"]
-            y = skydf.loc[i, "y"]
-            e1 = skydf.loc[i, "e1"]
-            e2 = skydf.loc[i, "e2"]
-            ell = createEllipse(x, y, e1, e2, sizeFactor)
-            ax.add_artist(ell)
-            ell.set_alpha(np.random.rand())
-            ell.set_facecolor(np.random.rand(3))
 
-        if haloLocation :
-            ax.plot(haloLocation[0], haloLocation[1], 'ro', markersize = 20)
-        return fig
+    ax.set_ylim(0.0, 4200.0)
+    ax.set_xlim(0.0, 4200.0)
+    ax.xaxis.tick_top()
+    for i in skydf.index :
+        x = skydf.loc[i, "x"]
+        y = skydf.loc[i, "y"]
+        e1 = skydf.loc[i, "e1"]
+        e2 = skydf.loc[i, "e2"]
+        ell = createEllipse(x, y, e1, e2, sizeFactor)
+        ax.add_artist(ell)
+        ell.set_alpha(np.random.rand())
+        ell.set_facecolor(np.random.rand(3))
+
+    if haloLocation :
+        ax.plot(haloLocation[0], haloLocation[1], 'ro', markersize = 20)
+    return fig
+
+def genPlotVectors(skydf, haloLocation = None, sizeFactor = None) :
+    fig, ax = plt.subplots()
+    if skydf.size < 1 : return fig
+
+    sizeFactor = sizeFactor if sizeFactor else 1
+
+    ax.set_ylim(0.0, 4200.0)
+    ax.set_xlim(0.0, 4200.0)
+    # ax.xaxis.tick_top()
+
+    for i in skydf.index :
+        x = skydf.loc[i, "x"]
+        y = skydf.loc[i, "y"]
+        e1 = skydf.loc[i, "e1"]
+        e2 = skydf.loc[i, "e2"]
