@@ -74,5 +74,19 @@ def genPlotVectors(skydf, haloLocation = None, sizeFactor = None) :
         y = skydf.loc[i, "y"]
         e1 = skydf.loc[i, "e1"]
         e2 = skydf.loc[i, "e2"]
+        theta = computeTheta(e1, e2)
+        e = np.sqrt(e1**2 + e2**2)
+        majorA = (1 / (1-e)) * sizeFactor
+        xOffset = (majorA / 2) * np.cos(theta)
+        yOffset = (majorA / 2) * np.sin(theta)
+        x1 = x - xOffset
+        x2 = x + xOffset
+        y1 = y - yOffset
+        y2 = y+ yOffset
 
-        
+        ax.plot([x1, x2], [y1, y2], "b-")
+        ax.plot(x, y, "bo", markersize=1)
+
+    if haloLocation :
+        ax.plot(haloLocation[0], haloLocation[1], 'ro', markersize = 10, alpha=.5)
+    return fig
