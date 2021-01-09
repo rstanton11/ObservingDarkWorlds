@@ -74,3 +74,5 @@ def genPlotVectors(skydf, haloLocation = None, sizeFactor = None) :
         y = skydf.loc[i, "y"]
         e1 = skydf.loc[i, "e1"]
         e2 = skydf.loc[i, "e2"]
+
+        
